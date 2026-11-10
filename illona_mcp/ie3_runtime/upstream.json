@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/ie3jp/illustrator-mcp-server",
+  "commit": "57c5c101a5192c61535493f39b653e6f92b8eb29",
+  "version": "1.10.3",
+  "license": "MIT",
+  "patches": [
+    "vendor/src/executor/jsx-runner.ts replaced with Illona JSONL broker; no native process transport",
+    "group-objects.ts uses PLACEATBEGINNING to preserve documented bottom-to-top UUID order"
+  ]
+}

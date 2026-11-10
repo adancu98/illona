@@ -1,0 +1,4868 @@
+{
+  "adapter_version": "1.0.0",
+  "upstream_version": "1.10.3",
+  "protocol_version": 1,
+  "tools": [
+    {
+      "name": "get_document_info",
+      "title": "Get Document Info",
+      "description": "Get document metadata",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_artboards",
+      "title": "Get Artboards",
+      "description": "Get all artboard information",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "index": {
+            "description": "Get a specific artboard by index (0-based integer)",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_layers",
+      "title": "Get Layers",
+      "description": "Get layer structure as a tree",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "include_sublayers": {
+            "default": true,
+            "description": "Include sublayers",
+            "type": "boolean"
+          },
+          "include_items": {
+            "default": false,
+            "description": "Include items within each layer",
+            "type": "boolean"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_selection",
+      "title": "Get Selection",
+      "description": "Get detailed information about the currently selected objects. While editing text (text cursor or selected characters), the containing text frame is returned with a textSelection field (selected contents, length, start; insertionPoint: true for a bare cursor).",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_text_frames",
+      "title": "List Text Frames",
+      "description": "List text frames with summary-level information (including orientation and threaded-frame links nextFrameUUID/previousFrameUUID). Supports reading-order sort, pagination, and a lightweight contents-only mode. layer_name includes text inside groups and sublayers of that layer.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "layer_name": {
+            "description": "Filter by layer name",
+            "type": "string"
+          },
+          "artboard_index": {
+            "description": "Filter by artboard index (0-based integer)",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "sort": {
+            "description": "Sort order. \"reading-order\" sorts by artboardIndex asc → y asc → x asc (rows within ~5pt tolerance are treated as the same line). On artboards where most frames are vertical text, columns are read right → left, then top → bottom.",
+            "type": "string",
+            "enum": [
+              "reading-order"
+            ]
+          },
+          "contents_only": {
+            "description": "When true, return only uuid, contents, and artboardIndex (no position/font/style info). Useful for text proofreading.",
+            "type": "boolean"
+          },
+          "offset": {
+            "description": "Number of items to skip (for pagination). Applied after sort.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "limit": {
+            "description": "Maximum number of items to return (for pagination). Applied after sort.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_text_frame_detail",
+      "title": "Get Text Frame Detail",
+      "description": "Get detailed text frame attributes including per-character runs (font, tracking, akiLeft/akiRight, tsume, proportionalMetrics), kerning pairs with manual kerning values (1/1000 em), paragraph attributes (leading, autoLeading, paragraph style), orientation (horizontal/vertical) and threaded-frame links (nextFrameUUID/previousFrameUUID). Returns cssHints for web/CSS reproduction.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "UUID of the target text frame"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "uuid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_colors",
+      "title": "Get Colors",
+      "description": "Get all color information used in the document. usedFillColors / usedStrokeColors list each distinct color once with a count of how many paths and text ranges use it (most used first).",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "include_swatches": {
+            "default": true,
+            "description": "Include swatch list",
+            "type": "boolean"
+          },
+          "include_used_colors": {
+            "default": true,
+            "description": "Include used color collection",
+            "type": "boolean"
+          },
+          "include_diagnostics": {
+            "default": false,
+            "description": "Include print diagnostics: gradient color space validation, ink coverage per color, color model mismatch warnings",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_path_items",
+      "title": "Get Path Items",
+      "description": "Get path and shape data, including paths inside groups and compound paths (clipping: true marks a clipping-mask path). Note: fill/stroke do not include per-attribute opacity; use the item-level opacity field for transparency.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "layer_name": {
+            "description": "Filter by layer name",
+            "type": "string"
+          },
+          "include_points": {
+            "default": false,
+            "description": "Include anchor point details",
+            "type": "boolean"
+          },
+          "selection_only": {
+            "default": false,
+            "description": "Get selected paths only",
+            "type": "boolean"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_guidelines",
+      "title": "Get Guidelines",
+      "description": "Get guide information",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_groups",
+      "title": "Get Groups",
+      "description": "Get structure of groups, clipping masks, and compound paths. Children of a clipping-mask group mark the mask path with clipping: true. When depth cuts the tree off, the item has childrenTruncated: true and childCount (children is empty only because of the depth limit).",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "layer_name": {
+            "description": "Filter by layer name (all layers if omitted)",
+            "type": "string"
+          },
+          "depth": {
+            "default": 10,
+            "description": "Maximum traversal depth",
+            "type": "number"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_effects",
+      "title": "Get Effects",
+      "description": "Get effect and appearance information",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "target": {
+            "description": "Filter by UUID for a specific object",
+            "type": "string"
+          },
+          "selection_only": {
+            "description": "Selected objects only",
+            "type": "boolean"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_images",
+      "title": "Get Images",
+      "description": "Get embedded and linked image information: file path, broken-link status (linkBroken: file missing on disk), pixel size, and effective resolution (ppi at the placed size; rotation-safe).",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          },
+          "include_print_info": {
+            "default": false,
+            "description": "Include print diagnostics: resolutionH/resolutionV (effective ppi per axis; they differ when scaled non-uniformly) and, for embedded raster images, a colorSpaceMismatch flag.",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_symbols",
+      "title": "Get Symbols",
+      "description": "Get symbol definitions and instances",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_document_structure",
+      "title": "Get Document Structure",
+      "description": "Get tree structure of layers, groups, and objects",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "depth": {
+            "description": "Maximum traversal depth (unlimited if omitted). Layers/groups cut off by the limit have childrenTruncated: true and childCount.",
+            "type": "number"
+          },
+          "artboard_index": {
+            "description": "Filter by artboard index (0-based integer)",
+            "type": "number"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "find_objects",
+      "title": "Find Objects",
+      "description": "Search for objects by specified criteria",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Object name (partial match)",
+            "type": "string"
+          },
+          "type": {
+            "description": "Object type",
+            "type": "string",
+            "enum": [
+              "text",
+              "path",
+              "image",
+              "group",
+              "compound-path",
+              "symbol"
+            ]
+          },
+          "layer_name": {
+            "description": "Layer name",
+            "type": "string"
+          },
+          "fill_color": {
+            "description": "Search paths and compound paths (matched by their inner paths) by fill color. Tolerance defaults to 5 per channel (0-255 for RGB, 0-100 for CMYK). Set tolerance: 0 for exact match.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "cmyk",
+                  "rgb"
+                ]
+              },
+              "c": {
+                "type": "number"
+              },
+              "m": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "k": {
+                "type": "number"
+              },
+              "r": {
+                "type": "number"
+              },
+              "g": {
+                "type": "number"
+              },
+              "b": {
+                "type": "number"
+              },
+              "tolerance": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "stroke_color": {
+            "description": "Search paths and compound paths (matched by their inner paths) by stroke color. Tolerance defaults to 5 per channel (0-255 for RGB, 0-100 for CMYK). Set tolerance: 0 for exact match.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "cmyk",
+                  "rgb"
+                ]
+              },
+              "c": {
+                "type": "number"
+              },
+              "m": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "k": {
+                "type": "number"
+              },
+              "r": {
+                "type": "number"
+              },
+              "g": {
+                "type": "number"
+              },
+              "b": {
+                "type": "number"
+              },
+              "tolerance": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "font_name": {
+            "description": "Font name (partial match)",
+            "type": "string"
+          },
+          "font_size": {
+            "description": "Font size range",
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              }
+            }
+          },
+          "artboard_index": {
+            "description": "Artboard index (0-based integer)",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_contrast",
+      "title": "Check Contrast",
+      "description": "Check WCAG color contrast ratios. Manual mode: provide color1 and color2. Auto mode (auto_detect: true): find visible foreground/background pairs by bounding-box overlap (stacking order, opacity and clipping are not considered; gradient/pattern/image backgrounds are reported as unevaluated). Non-RGB colors are converted without ICC profiles, so their ratio is approximate and WCAG pass/fail is null. GrayColor uses ink-quantity interpretation (0=white, 100=black), which differs from the API reference.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "color1": {
+            "description": "First color (manual mode)",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "cmyk",
+                  "rgb",
+                  "gray"
+                ]
+              },
+              "c": {
+                "type": "number"
+              },
+              "m": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "k": {
+                "type": "number"
+              },
+              "r": {
+                "type": "number"
+              },
+              "g": {
+                "type": "number"
+              },
+              "b": {
+                "type": "number"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "color2": {
+            "description": "Second color (manual mode)",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "cmyk",
+                  "rgb",
+                  "gray"
+                ]
+              },
+              "c": {
+                "type": "number"
+              },
+              "m": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "k": {
+                "type": "number"
+              },
+              "r": {
+                "type": "number"
+              },
+              "g": {
+                "type": "number"
+              },
+              "b": {
+                "type": "number"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "auto_detect": {
+            "default": false,
+            "description": "Auto-detect overlapping foreground/background color pairs in the document. Do not combine with color1/color2.",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "extract_design_tokens",
+      "title": "Extract Design Tokens",
+      "description": "Extract colors, typography, and spacing from the document as design tokens in CSS custom properties, JSON, or Tailwind format. Optionally writes the result to output_path (never overwrites an existing file unless overwrite: true).",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "format": {
+            "default": "css",
+            "description": "Output format",
+            "type": "string",
+            "enum": [
+              "css",
+              "json",
+              "tailwind"
+            ]
+          },
+          "output_path": {
+            "description": "Absolute file path to save the output (e.g. \"/path/to/tokens.json\"). If omitted, returns text only.",
+            "type": "string"
+          },
+          "overwrite": {
+            "description": "Replace output_path if it already exists. Default false: an existing file is left untouched and an error is returned.",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "export",
+      "title": "Export",
+      "description": "Export objects, groups, artboards, or selection. Use target \"artboard:all\" to batch-export every artboard in one call. For single PNG/JPG exports, the exported image is returned as base64 in the response — you can view it directly without reading the file from disk (\"artboard:all\" returns file paths only; images larger than ~3.75MB are not inlined). An explicit output_path that already exists is not overwritten unless overwrite is true.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "UUID, \"artboard:<index>\", \"artboard:all\" (batch-export every artboard; filenames get \"_<n>-<artboardName>\" suffixes), or \"selection\". UUID and \"selection\" export only those objects, cropped to their visible bounds (they are duplicated into a temporary document; the clipboard and current selection are left untouched)."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "svg",
+              "png",
+              "jpg"
+            ],
+            "description": "Export format"
+          },
+          "output_path": {
+            "description": "Absolute output file path (SVG file names must be ASCII). The extension must match format (.svg/.png/.jpg); it is added if omitted. If omitted, auto-generates a non-conflicting name in the same directory as the document (or ~/Desktop for unsaved documents)",
+            "type": "string"
+          },
+          "overwrite": {
+            "description": "Replace existing files at output_path (including \"artboard:all\" per-artboard files). Default false: returns an error listing the existing files",
+            "type": "boolean"
+          },
+          "scale": {
+            "default": 1,
+            "description": "Scale factor for PNG/JPG (dpi × scale must be <= 2400)",
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "svg_options": {
+            "description": "SVG export options",
+            "type": "object",
+            "properties": {
+              "text_outline": {
+                "description": "Convert text to outlines",
+                "type": "boolean"
+              },
+              "css_properties": {
+                "description": "Export as CSS properties",
+                "type": "boolean"
+              },
+              "embed_images": {
+                "description": "Embed raster images",
+                "type": "boolean"
+              },
+              "id_naming": {
+                "description": "ID naming scheme",
+                "type": "string",
+                "enum": [
+                  "layer",
+                  "object",
+                  "auto"
+                ]
+              },
+              "decimal_places": {
+                "description": "Decimal places",
+                "type": "number"
+              },
+              "encoding": {
+                "description": "SVG document encoding (default: \"utf8\"). \"ascii\" is the Illustrator default and writes every non-ASCII character as a numeric character reference, declaring iso-8859-1.",
+                "type": "string",
+                "enum": [
+                  "utf8",
+                  "ascii",
+                  "utf16"
+                ]
+              }
+            }
+          },
+          "raster_options": {
+            "description": "Raster export options",
+            "type": "object",
+            "properties": {
+              "dpi": {
+                "description": "Resolution (DPI, default 72)",
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "background": {
+                "description": "\"transparent\", \"white\", or color code",
+                "type": "string"
+              },
+              "antialiasing": {
+                "description": "Anti-aliasing",
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "required": [
+          "target",
+          "format"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "export_pdf",
+      "title": "Export PDF",
+      "description": "Export print-ready PDF. Japanese trim marks (marks_style \"japanese\" + trim_marks) are drawn temporarily on the document and removed after export; they are only supported for single-artboard documents (multi-artboard documents return an error). When a preset is given, trim mark settings you do not specify are kept from the preset. An explicit output_path that already exists is not overwritten unless overwrite is true. Note: Illustrator will be activated (brought to foreground) only when generating Japanese trim marks. The exported PDF should be verified by a human before final submission.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "output_path": {
+            "description": "Absolute output file path ending in .pdf (.pdf is added if omitted). If omitted, auto-generates a non-conflicting name in the same directory as the document (or ~/Desktop for unsaved documents)",
+            "type": "string"
+          },
+          "overwrite": {
+            "description": "Replace an existing file at output_path. Default false: returns an error with existing_files and exports nothing",
+            "type": "boolean"
+          },
+          "preset": {
+            "description": "PDF preset name (e.g. \"[PDF/X-4:2008]\"). Must exist in Illustrator's PDF presets, otherwise an error listing available presets is returned.",
+            "type": "string"
+          },
+          "options": {
+            "description": "PDF export options",
+            "type": "object",
+            "properties": {
+              "trim_marks": {
+                "description": "Add trim marks. If omitted with a preset, the preset's setting is kept.",
+                "type": "boolean"
+              },
+              "marks_style": {
+                "description": "Trim mark style (japanese or roman). Japanese + trim_marks requires a single-artboard document.",
+                "type": "string",
+                "enum": [
+                  "japanese",
+                  "roman"
+                ]
+              },
+              "trim_mark_weight": {
+                "description": "Trim mark weight (pt)",
+                "type": "string",
+                "enum": [
+                  "0.125",
+                  "0.25",
+                  "0.5"
+                ]
+              },
+              "registration_marks": {
+                "description": "Registration marks",
+                "type": "boolean"
+              },
+              "color_bars": {
+                "description": "Color bars",
+                "type": "boolean"
+              },
+              "page_information": {
+                "description": "Page information",
+                "type": "boolean"
+              },
+              "bleed": {
+                "description": "Include bleed (3mm)",
+                "type": "boolean"
+              },
+              "downsample": {
+                "description": "Downsample all images (shorthand: color 300dpi, grayscale 300dpi, monochrome 1200dpi)",
+                "type": "boolean"
+              },
+              "color_downsample_dpi": {
+                "description": "Color image downsample target DPI (overrides downsample)",
+                "type": "integer",
+                "minimum": 72,
+                "maximum": 9007199254740991
+              },
+              "grayscale_downsample_dpi": {
+                "description": "Grayscale image downsample target DPI (overrides downsample)",
+                "type": "integer",
+                "minimum": 72,
+                "maximum": 9007199254740991
+              },
+              "monochrome_downsample_dpi": {
+                "description": "Monochrome image downsample target DPI (overrides downsample)",
+                "type": "integer",
+                "minimum": 72,
+                "maximum": 9007199254740991
+              },
+              "output_intent_profile": {
+                "description": "Output intent ICC profile name (e.g. \"Japan Color 2001 Coated\"). Version-dependent feature.",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_overprint_info",
+      "title": "Get Overprint Info",
+      "description": "Get overprint settings of paths (incl. compound paths), text (per character) and raster images, each with a heuristic label (K100 / rich black / spot / likely accidental) inferred from colors only. The result includes the scan scope; placed files, symbols and meshes are not inspected.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_separation_info",
+      "title": "Get Separation Info",
+      "description": "Get color separation info: process and spot plates actually used by the artwork (paths, gradients, text, rasters) with usage counts, inks with no detected usage, global process colors, and Illustrator's document ink list. The result includes the scan scope; placed files, patterns and symbols are not inspected.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "preflight_check",
+      "title": "Preflight Check",
+      "description": "Run pre-press quality checks (RGB in CMYK incl. gradient stops, text colors and embedded images; broken links; low resolution; fonts; white overprint on paths and text; transparency; spot colors). `coverage` reports per check whether it was fully checked, partial (sampled or uninspectable contents such as symbols, linked files, live effects under x1a) or skipped — a check marked partial/skipped is not a clean pass. Results are capped at 20 per category; the rest are summarized in one entry with counts and UUIDs (`categoryCounts` has totals). Not exhaustive — does not replace a human final review. GrayColor uses ink-quantity interpretation (0=white/no ink, 100=black/full ink), which differs from the API reference.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          },
+          "min_dpi": {
+            "default": 300,
+            "description": "Minimum acceptable DPI for images (default: 300)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "target_pdf_profile": {
+            "description": "Target PDF/X profile for compliance checks. x1a: no transparency/RGB, fonts must be embeddable (installed). x4: allows transparency, recommends ICC profile.",
+            "type": "string",
+            "enum": [
+              "x1a",
+              "x4"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_text_consistency",
+      "title": "Check Text Consistency",
+      "description": "Analyze text frames for dummy/placeholder text and known notation variation patterns (katakana long vowel, fullwidth/halfwidth, wave dash/tilde). Returns all text contents for LLM-driven deeper analysis of inconsistencies, typos, and version mismatches. Note: AI analysis may miss errors and does not replace a human text review.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "artboard_index": {
+            "description": "Filter by artboard index (0-based)",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_workflow",
+      "title": "Set Workflow",
+      "description": "Set the session-level workflow and default coordinate system. Call this after confirming the user's intent (web, print, or video). Once set, all tools that omit coordinate_system will use the session default. Use clear: true to reset to auto-detection from document (CMYK/print → document coords, RGB/web → artboard-web).",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "workflow": {
+            "description": "The workflow type. Determines the default coordinate system.",
+            "type": "string",
+            "enum": [
+              "web",
+              "print",
+              "video"
+            ]
+          },
+          "coordinate_system": {
+            "description": "Explicit coordinate system override. If provided with workflow, overrides the workflow-derived default.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          },
+          "clear": {
+            "description": "Reset session to default behavior (auto-detect from document).",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_illustrator_version",
+      "title": "Set Illustrator Version",
+      "description": "Set which Illustrator version to target when multiple versions are installed. Specify a version year (e.g. \"2024\", \"2025\"). If Illustrator is already running, connects to the running instance regardless of version. If not running, launches the specified version. Use clear: true to reset to default behavior (connect to any running Illustrator).",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "version": {
+            "description": "Illustrator version year (e.g. \"2024\", \"2025\").",
+            "type": "string",
+            "pattern": "^\\d{4}$"
+          },
+          "clear": {
+            "description": "Reset to default behavior (connect to any running Illustrator).",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_rectangle",
+      "title": "Create Rectangle",
+      "description": "Create a rectangle. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "Top-left X coordinate"
+          },
+          "y": {
+            "type": "number",
+            "description": "Top-left Y coordinate"
+          },
+          "width": {
+            "type": "number",
+            "description": "Width"
+          },
+          "height": {
+            "type": "number",
+            "description": "Height"
+          },
+          "corner_radius": {
+            "default": 0,
+            "description": "Corner radius",
+            "type": "number"
+          },
+          "fill": {
+            "description": "Fill color",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "cmyk",
+                    "description": "Color type"
+                  },
+                  "c": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Cyan (0-100)"
+                  },
+                  "m": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Magenta (0-100)"
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Yellow (0-100)"
+                  },
+                  "k": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Black (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "c",
+                  "m",
+                  "y",
+                  "k"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "rgb",
+                    "description": "Color type"
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Red (0-255)"
+                  },
+                  "g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Green (0-255)"
+                  },
+                  "b": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Blue (0-255)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "r",
+                  "g",
+                  "b"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "gray",
+                    "description": "Color type"
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Gray value (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "none",
+                    "description": "Color type"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            ]
+          },
+          "stroke": {
+            "description": "Stroke settings",
+            "type": "object",
+            "properties": {
+              "color": {
+                "description": "Stroke color",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "cmyk",
+                        "description": "Color type"
+                      },
+                      "c": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Cyan (0-100)"
+                      },
+                      "m": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Magenta (0-100)"
+                      },
+                      "y": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Yellow (0-100)"
+                      },
+                      "k": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Black (0-100)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "c",
+                      "m",
+                      "y",
+                      "k"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "rgb",
+                        "description": "Color type"
+                      },
+                      "r": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Red (0-255)"
+                      },
+                      "g": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Green (0-255)"
+                      },
+                      "b": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Blue (0-255)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "r",
+                      "g",
+                      "b"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "gray",
+                        "description": "Color type"
+                      },
+                      "value": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Gray value (0-100)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "value"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "none",
+                        "description": "Color type"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  }
+                ]
+              },
+              "width": {
+                "description": "Stroke width",
+                "type": "number"
+              }
+            }
+          },
+          "layer_name": {
+            "description": "Target layer name",
+            "type": "string"
+          },
+          "name": {
+            "description": "Object name",
+            "type": "string"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "width",
+          "height"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_ellipse",
+      "title": "Create Ellipse",
+      "description": "Create an ellipse. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "Bounding box top-left X coordinate"
+          },
+          "y": {
+            "type": "number",
+            "description": "Bounding box top-left Y coordinate"
+          },
+          "width": {
+            "type": "number",
+            "description": "Width"
+          },
+          "height": {
+            "type": "number",
+            "description": "Height"
+          },
+          "fill": {
+            "description": "Fill color",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "cmyk",
+                    "description": "Color type"
+                  },
+                  "c": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Cyan (0-100)"
+                  },
+                  "m": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Magenta (0-100)"
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Yellow (0-100)"
+                  },
+                  "k": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Black (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "c",
+                  "m",
+                  "y",
+                  "k"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "rgb",
+                    "description": "Color type"
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Red (0-255)"
+                  },
+                  "g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Green (0-255)"
+                  },
+                  "b": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Blue (0-255)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "r",
+                  "g",
+                  "b"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "gray",
+                    "description": "Color type"
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Gray value (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "none",
+                    "description": "Color type"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            ]
+          },
+          "stroke": {
+            "description": "Stroke settings",
+            "type": "object",
+            "properties": {
+              "color": {
+                "description": "Stroke color",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "cmyk",
+                        "description": "Color type"
+                      },
+                      "c": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Cyan (0-100)"
+                      },
+                      "m": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Magenta (0-100)"
+                      },
+                      "y": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Yellow (0-100)"
+                      },
+                      "k": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Black (0-100)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "c",
+                      "m",
+                      "y",
+                      "k"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "rgb",
+                        "description": "Color type"
+                      },
+                      "r": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Red (0-255)"
+                      },
+                      "g": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Green (0-255)"
+                      },
+                      "b": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Blue (0-255)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "r",
+                      "g",
+                      "b"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "gray",
+                        "description": "Color type"
+                      },
+                      "value": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Gray value (0-100)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "value"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "none",
+                        "description": "Color type"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  }
+                ]
+              },
+              "width": {
+                "description": "Stroke width",
+                "type": "number"
+              }
+            }
+          },
+          "layer_name": {
+            "description": "Target layer name",
+            "type": "string"
+          },
+          "name": {
+            "description": "Object name",
+            "type": "string"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "width",
+          "height"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_line",
+      "title": "Create Line",
+      "description": "Create a line. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "x1": {
+            "type": "number",
+            "description": "Start point X coordinate"
+          },
+          "y1": {
+            "type": "number",
+            "description": "Start point Y coordinate"
+          },
+          "x2": {
+            "type": "number",
+            "description": "End point X coordinate"
+          },
+          "y2": {
+            "type": "number",
+            "description": "End point Y coordinate"
+          },
+          "stroke": {
+            "description": "Stroke settings",
+            "type": "object",
+            "properties": {
+              "color": {
+                "description": "Stroke color",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "cmyk",
+                        "description": "Color type"
+                      },
+                      "c": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Cyan (0-100)"
+                      },
+                      "m": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Magenta (0-100)"
+                      },
+                      "y": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Yellow (0-100)"
+                      },
+                      "k": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Black (0-100)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "c",
+                      "m",
+                      "y",
+                      "k"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "rgb",
+                        "description": "Color type"
+                      },
+                      "r": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Red (0-255)"
+                      },
+                      "g": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Green (0-255)"
+                      },
+                      "b": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Blue (0-255)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "r",
+                      "g",
+                      "b"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "gray",
+                        "description": "Color type"
+                      },
+                      "value": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Gray value (0-100)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "value"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "none",
+                        "description": "Color type"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  }
+                ]
+              },
+              "width": {
+                "description": "Stroke width",
+                "type": "number"
+              },
+              "cap": {
+                "description": "Line cap style",
+                "type": "string",
+                "enum": [
+                  "butt",
+                  "round",
+                  "projecting"
+                ]
+              }
+            }
+          },
+          "layer_name": {
+            "description": "Target layer name",
+            "type": "string"
+          },
+          "name": {
+            "description": "Object name",
+            "type": "string"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "x1",
+          "y1",
+          "x2",
+          "y2"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_text_frame",
+      "title": "Create Text Frame",
+      "description": "Create a text frame. Positioning differs by kind: for point text (x, y) is the text ANCHOR — y is the BASELINE of the first line (glyphs extend above it), and x is the left edge, center, or right edge depending on justification (so right-aligned text only needs justification: \"right\" with x at the right edge). For area text (x, y) is the top-left of the text area. verified.bounds always reports the resulting bounding box (top-left, width, height) — that box is what modify_object position moves. If font_name is not found, nothing is created and an error with font_candidates is returned. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "X coordinate. Point text: anchor x (left/center/right edge per justification). Area text: left edge."
+          },
+          "y": {
+            "type": "number",
+            "description": "Y coordinate. Point text: BASELINE of the first line, not the top of the glyphs. Area text: top edge."
+          },
+          "contents": {
+            "type": "string",
+            "description": "Text contents. Use \\n for line breaks (automatically converted to CR for Illustrator)."
+          },
+          "kind": {
+            "default": "point",
+            "description": "Text frame type (point or area)",
+            "type": "string",
+            "enum": [
+              "point",
+              "area"
+            ]
+          },
+          "width": {
+            "description": "Area text width",
+            "type": "number"
+          },
+          "height": {
+            "description": "Area text height",
+            "type": "number"
+          },
+          "font_name": {
+            "description": "Exact font name as listed by list_fonts (the \"name\" field, e.g. \"HelveticaNeue-Bold\", \"ArialMT\"). Not a partial match: if not found, nothing is created and an error with font_candidates is returned.",
+            "type": "string"
+          },
+          "font_size": {
+            "description": "Font size (pt)",
+            "type": "number"
+          },
+          "tracking": {
+            "description": "Letter spacing (tracking) in 1/1000 em, applied to the whole frame. 0 = none, positive = looser, negative = tighter. Same units and range as the tracking field in Illustrator's Character panel.",
+            "type": "number",
+            "minimum": -1000,
+            "maximum": 10000
+          },
+          "leading": {
+            "description": "Line spacing (leading) in pt, applied to the whole frame. Omit for auto leading (auto leading can be large in Japanese-default environments, e.g. 175%; set this for tight multi-line Latin text).",
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "justification": {
+            "description": "Paragraph alignment for all paragraphs: left | center | right, or justified with the last line left/center/right (justify_left, justify_center, justify_right) or all lines forced (justify_all). Justified values only have an effect on area text.",
+            "type": "string",
+            "enum": [
+              "left",
+              "center",
+              "right",
+              "justify_left",
+              "justify_center",
+              "justify_right",
+              "justify_all"
+            ]
+          },
+          "fill": {
+            "description": "Text color",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "cmyk",
+                    "description": "Color type"
+                  },
+                  "c": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Cyan (0-100)"
+                  },
+                  "m": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Magenta (0-100)"
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Yellow (0-100)"
+                  },
+                  "k": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Black (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "c",
+                  "m",
+                  "y",
+                  "k"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "rgb",
+                    "description": "Color type"
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Red (0-255)"
+                  },
+                  "g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Green (0-255)"
+                  },
+                  "b": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Blue (0-255)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "r",
+                  "g",
+                  "b"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "gray",
+                    "description": "Color type"
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Gray value (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "none",
+                    "description": "Color type"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            ]
+          },
+          "layer_name": {
+            "description": "Target layer name",
+            "type": "string"
+          },
+          "name": {
+            "description": "Object name",
+            "type": "string"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "contents"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_path",
+      "title": "Create Path",
+      "description": "Create a custom path. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "anchors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "Anchor point X coordinate"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Anchor point Y coordinate"
+                },
+                "left_handle": {
+                  "description": "Left direction handle coordinates",
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ]
+                },
+                "right_handle": {
+                  "description": "Right direction handle coordinates",
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ]
+                },
+                "point_type": {
+                  "default": "corner",
+                  "description": "Point type",
+                  "type": "string",
+                  "enum": [
+                    "corner",
+                    "smooth"
+                  ]
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ]
+            },
+            "description": "Array of anchor points"
+          },
+          "closed": {
+            "description": "Whether to close the path",
+            "type": "boolean"
+          },
+          "fill": {
+            "description": "Fill color",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "cmyk",
+                    "description": "Color type"
+                  },
+                  "c": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Cyan (0-100)"
+                  },
+                  "m": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Magenta (0-100)"
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Yellow (0-100)"
+                  },
+                  "k": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Black (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "c",
+                  "m",
+                  "y",
+                  "k"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "rgb",
+                    "description": "Color type"
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Red (0-255)"
+                  },
+                  "g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Green (0-255)"
+                  },
+                  "b": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Blue (0-255)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "r",
+                  "g",
+                  "b"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "gray",
+                    "description": "Color type"
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Gray value (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "none",
+                    "description": "Color type"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            ]
+          },
+          "stroke": {
+            "description": "Stroke settings",
+            "type": "object",
+            "properties": {
+              "color": {
+                "description": "Stroke color",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "cmyk",
+                        "description": "Color type"
+                      },
+                      "c": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Cyan (0-100)"
+                      },
+                      "m": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Magenta (0-100)"
+                      },
+                      "y": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Yellow (0-100)"
+                      },
+                      "k": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Black (0-100)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "c",
+                      "m",
+                      "y",
+                      "k"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "rgb",
+                        "description": "Color type"
+                      },
+                      "r": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Red (0-255)"
+                      },
+                      "g": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Green (0-255)"
+                      },
+                      "b": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Blue (0-255)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "r",
+                      "g",
+                      "b"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "gray",
+                        "description": "Color type"
+                      },
+                      "value": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Gray value (0-100)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "value"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "none",
+                        "description": "Color type"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  }
+                ]
+              },
+              "width": {
+                "description": "Stroke width",
+                "type": "number"
+              }
+            }
+          },
+          "layer_name": {
+            "description": "Target layer name",
+            "type": "string"
+          },
+          "name": {
+            "description": "Object name",
+            "type": "string"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "anchors"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "modify_object",
+      "title": "Modify Object",
+      "description": "Modify properties of an existing object. fill/stroke on a group or compound path are applied to every path and text frame inside it (like Illustrator's UI; clipping paths and guides are skipped) and the result reports how many were changed (painted) and the colors they actually have (verified.descendantFills). success is false if any of them could not be painted. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "UUID of the target object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "position": {
+                "description": "Position",
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "description": "X coordinate"
+                  },
+                  "y": {
+                    "type": "number",
+                    "description": "Y coordinate"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ]
+              },
+              "size": {
+                "description": "Size",
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "description": "Width",
+                    "type": "number"
+                  },
+                  "height": {
+                    "description": "Height",
+                    "type": "number"
+                  }
+                }
+              },
+              "fill": {
+                "description": "Fill color. For text frames this is the character color; for groups/compound paths it is applied to all paths and text inside",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "cmyk",
+                        "description": "Color type"
+                      },
+                      "c": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Cyan (0-100)"
+                      },
+                      "m": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Magenta (0-100)"
+                      },
+                      "y": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Yellow (0-100)"
+                      },
+                      "k": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Black (0-100)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "c",
+                      "m",
+                      "y",
+                      "k"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "rgb",
+                        "description": "Color type"
+                      },
+                      "r": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Red (0-255)"
+                      },
+                      "g": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Green (0-255)"
+                      },
+                      "b": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "description": "Blue (0-255)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "r",
+                      "g",
+                      "b"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "gray",
+                        "description": "Color type"
+                      },
+                      "value": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "description": "Gray value (0-100)"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "value"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "none",
+                        "description": "Color type"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  }
+                ]
+              },
+              "stroke": {
+                "description": "Stroke settings. For groups/compound paths it is applied to all paths and text inside",
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "description": "Stroke color",
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "cmyk",
+                            "description": "Color type"
+                          },
+                          "c": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 100,
+                            "description": "Cyan (0-100)"
+                          },
+                          "m": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 100,
+                            "description": "Magenta (0-100)"
+                          },
+                          "y": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 100,
+                            "description": "Yellow (0-100)"
+                          },
+                          "k": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 100,
+                            "description": "Black (0-100)"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "c",
+                          "m",
+                          "y",
+                          "k"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "rgb",
+                            "description": "Color type"
+                          },
+                          "r": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 255,
+                            "description": "Red (0-255)"
+                          },
+                          "g": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 255,
+                            "description": "Green (0-255)"
+                          },
+                          "b": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 255,
+                            "description": "Blue (0-255)"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "r",
+                          "g",
+                          "b"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "gray",
+                            "description": "Color type"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 100,
+                            "description": "Gray value (0-100)"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "value"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "none",
+                            "description": "Color type"
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      }
+                    ]
+                  },
+                  "width": {
+                    "description": "Stroke width",
+                    "type": "number"
+                  }
+                }
+              },
+              "opacity": {
+                "description": "Opacity (0-100)",
+                "type": "number"
+              },
+              "rotation": {
+                "description": "Rotation in degrees. Default mode is \"delta\" (additive). Use rotation_mode: \"absolute\" for target angle.",
+                "type": "number"
+              },
+              "rotation_mode": {
+                "default": "delta",
+                "description": "delta = add to current rotation, absolute = set to exact angle",
+                "type": "string",
+                "enum": [
+                  "delta",
+                  "absolute"
+                ]
+              },
+              "name": {
+                "description": "Object name",
+                "type": "string"
+              },
+              "hidden": {
+                "description": "Hide (true) or show (false) the object without deleting it",
+                "type": "boolean"
+              },
+              "locked": {
+                "description": "Lock (true) or unlock (false) the object. Unlock is applied before other changes, lock after them",
+                "type": "boolean"
+              },
+              "contents": {
+                "description": "Text contents (for text frames)",
+                "type": "string"
+              },
+              "font_name": {
+                "description": "Exact font name for text frames, as listed by list_fonts (the 'name' field, e.g. PostScript name 'HelveticaNeue-Bold'). If not found, nothing is modified and an error with font_candidates is returned",
+                "type": "string"
+              },
+              "font_size": {
+                "description": "Font size (for text frames)",
+                "type": "number"
+              },
+              "tracking": {
+                "description": "Letter spacing (tracking) in 1/1000 em, for text frames. 0 = none, positive = looser, negative = tighter. Same units and range as Illustrator's Character panel.",
+                "type": "number",
+                "minimum": -1000,
+                "maximum": 10000
+              },
+              "justification": {
+                "description": "Paragraph alignment for text frames, applied to all paragraphs",
+                "type": "string",
+                "enum": [
+                  "left",
+                  "center",
+                  "right"
+                ]
+              },
+              "leading": {
+                "description": "Line spacing (leading) in pt for text frames, or \"auto\" for auto leading. Omit to leave unchanged",
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  {
+                    "type": "string",
+                    "const": "auto"
+                  }
+                ]
+              }
+            },
+            "description": "Properties to modify"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "uuid",
+          "properties"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "convert_to_outlines",
+      "title": "Convert to Outlines",
+      "description": "Convert text to outlines (irreversible except via undo). Text frames that cannot be converted (e.g. locked) are left as-is and listed in \"failed\" with the reason; success is false if any failed. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "Target: \"selection\" (selected), \"all\" (all text), or a top-level layer name (includes text inside groups and sublayers; if several layers share the name, the topmost one is used and a warning is returned)"
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "place_image",
+      "title": "Place Image",
+      "description": "Place a raster or PDF image file (PNG, JPG, TIFF, PSD, PDF, etc.) into the document as a linked or embedded image. SVG is NOT supported here because PlacedItems produces a non-editable linked artwork — use import_svg_as_editable instead to bring SVG content in as editable paths/text. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Absolute path to the image file"
+          },
+          "x": {
+            "description": "X position",
+            "type": "number"
+          },
+          "y": {
+            "description": "Y position",
+            "type": "number"
+          },
+          "embed": {
+            "default": false,
+            "description": "Embed the image instead of linking (default: false)",
+            "type": "boolean"
+          },
+          "layer_name": {
+            "description": "Target layer name",
+            "type": "string"
+          },
+          "name": {
+            "description": "Object name",
+            "type": "string"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "file_path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "import_svg_as_editable",
+      "title": "Import SVG as Editable",
+      "description": "Import an SVG file into the active document as editable Illustrator paths/text/groups (NOT as a linked image). Internally opens the SVG as a temporary document, duplicates its contents into the target document, then closes the source. Use this instead of place_image for SVG. Colors are NOT converted: importing into a CMYK document keeps the SVG's RGB colors, and the result then includes a warning with the count (fix with replace_color). Note: Illustrator will be activated (brought to foreground) during execution. Font caveat: Illustrator does not fall back per glyph across a font-family list. If the FIRST family in the list is installed but lacks a glyph, that character is dropped silently and the import still reports success. Specify a single font-family per text element, and pick one that actually contains the glyphs you use (symbols such as U+2713 are the common failure case). An uninstalled family is substituted by Illustrator and is NOT affected by this.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Absolute path to the .svg or .svgz file"
+          },
+          "x": {
+            "description": "X position of the imported content (top-left of bounding box). Ignored when fit_to_artboard is true.",
+            "type": "number"
+          },
+          "y": {
+            "description": "Y position of the imported content (top-left of bounding box). Ignored when fit_to_artboard is true.",
+            "type": "number"
+          },
+          "layer_name": {
+            "description": "Target layer name in the active document. Created if missing.",
+            "type": "string"
+          },
+          "group": {
+            "default": true,
+            "description": "Wrap imported items in a single GroupItem (default: true). Set false to keep items flat in the target layer.",
+            "type": "boolean"
+          },
+          "fit_to_artboard": {
+            "default": false,
+            "description": "Scale and center the imported content to fit the active artboard (default: false). Works in both coordinate systems.",
+            "type": "boolean"
+          },
+          "padding": {
+            "description": "Padding in points from the artboard edges when fit_to_artboard is true.",
+            "type": "number"
+          },
+          "name": {
+            "description": "Name to assign to the root group (only when group=true and multiple items are imported).",
+            "type": "string"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "file_path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "resize_for_variation",
+      "title": "Resize for Variation",
+      "description": "Create size variations from a source artboard. Duplicates all objects and scales/repositions them proportionally to fit target sizes. New artboards are placed to the right of all existing artboards; copies get new UUIDs. Limitations: no text reflow, effects/strokes scale with objects but may need manual adjustment, proportional placement only (not smart layout).",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "source_artboard_index": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Source artboard index to duplicate from (0-based)"
+          },
+          "target_sizes": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "width": {
+                  "type": "number",
+                  "description": "Target width in points"
+                },
+                "height": {
+                  "type": "number",
+                  "description": "Target height in points"
+                },
+                "name": {
+                  "description": "Artboard name for this variation",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "width",
+                "height"
+              ]
+            },
+            "description": "Target sizes for variations"
+          },
+          "scale_mode": {
+            "default": "proportional",
+            "description": "How to scale objects: proportional (fit within, maintain aspect), fit_width, or fit_height",
+            "type": "string",
+            "enum": [
+              "proportional",
+              "fit_width",
+              "fit_height"
+            ]
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "source_artboard_index",
+          "target_sizes"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "align_objects",
+      "title": "Align Objects",
+      "description": "Align and/or distribute multiple objects by their UUIDs. If any UUID is not found, nothing is moved and the missing UUIDs are returned in notFound.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuids": {
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "UUIDs of objects to align (minimum 2)"
+          },
+          "alignment": {
+            "description": "Alignment direction",
+            "type": "string",
+            "enum": [
+              "left",
+              "center_h",
+              "right",
+              "top",
+              "center_v",
+              "bottom"
+            ]
+          },
+          "distribute": {
+            "description": "Distribute objects evenly",
+            "type": "string",
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "reference": {
+            "default": "selection",
+            "description": "Align relative to selection bounding box or active artboard",
+            "type": "string",
+            "enum": [
+              "selection",
+              "artboard"
+            ]
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "uuids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "replace_color",
+      "title": "Replace Color",
+      "description": "Find and replace fill/stroke colors of paths and text characters across the document or within a specific layer. replacedCount counts replaced path fills/strokes; textFramesChanged counts text frames in which at least one character color was replaced (text strokes with weight 0 are ignored). Every replacement is read back; matches that could not be replaced (e.g. locked) are listed in failed and make success false. A layer scope includes groups and sublayers inside it. from_color must be cmyk or rgb and matches only objects whose current color is stored in that same color type (check with get_colors) — an RGB from_color does not match CMYK-colored objects. to_color can be any type, e.g. replace an RGB color with a CMYK one. Spot, gray, gradient and pattern colors are never matched.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "from_color": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "cmyk",
+                    "description": "Color type"
+                  },
+                  "c": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Cyan (0-100)"
+                  },
+                  "m": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Magenta (0-100)"
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Yellow (0-100)"
+                  },
+                  "k": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Black (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "c",
+                  "m",
+                  "y",
+                  "k"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "rgb",
+                    "description": "Color type"
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Red (0-255)"
+                  },
+                  "g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Green (0-255)"
+                  },
+                  "b": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Blue (0-255)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "r",
+                  "g",
+                  "b"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "gray",
+                    "description": "Color type"
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Gray value (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "none",
+                    "description": "Color type"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            ],
+            "description": "Color to find (required). cmyk or rgb, in the same color type the objects currently use"
+          },
+          "to_color": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "cmyk",
+                    "description": "Color type"
+                  },
+                  "c": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Cyan (0-100)"
+                  },
+                  "m": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Magenta (0-100)"
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Yellow (0-100)"
+                  },
+                  "k": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Black (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "c",
+                  "m",
+                  "y",
+                  "k"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "rgb",
+                    "description": "Color type"
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Red (0-255)"
+                  },
+                  "g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Green (0-255)"
+                  },
+                  "b": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Blue (0-255)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "r",
+                  "g",
+                  "b"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "gray",
+                    "description": "Color type"
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Gray value (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "none",
+                    "description": "Color type"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            ],
+            "description": "Replacement color (required). Any type; need not match from_color's type"
+          },
+          "tolerance": {
+            "default": 0,
+            "description": "Color matching tolerance per channel (0 = exact match, 100 = match any)",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "target": {
+            "default": "both",
+            "description": "Which color attributes to replace",
+            "type": "string",
+            "enum": [
+              "fill",
+              "stroke",
+              "both"
+            ]
+          },
+          "scope": {
+            "description": "Layer name to limit replacement scope (default: entire document)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "from_color",
+          "to_color"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "manage_layers",
+      "title": "Manage Layers",
+      "description": "Add, rename, show/hide, lock/unlock, reorder, or delete top-level layers by name. If several layers share a name, rename/show/hide/lock/unlock/reorder act on the topmost one with a warning, and delete is refused.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "add",
+              "rename",
+              "show",
+              "hide",
+              "lock",
+              "unlock",
+              "reorder",
+              "delete"
+            ],
+            "description": "Layer operation to perform"
+          },
+          "layer_name": {
+            "description": "Target layer name (for add: new layer name)",
+            "type": "string"
+          },
+          "new_name": {
+            "description": "New name (required for rename action)",
+            "type": "string"
+          },
+          "position": {
+            "description": "Target position for reorder (0 = topmost)",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "above": {
+            "description": "For add: create above this layer name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "place_color_chips",
+      "title": "Place Color Chips",
+      "description": "Extract all unique colors used in the document (path fills/strokes including inside groups and compound paths, text colors, gradient stop colors; spot colors per tint) and place color chip swatches with labels outside the artboard. Pattern fills cannot be shown as chips and are counted in skippedColors. Items already on the chip layer are ignored.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "artboard_index": {
+            "description": "Target artboard (default: active artboard)",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "chip_size": {
+            "default": 30,
+            "description": "Chip size in points (default: 30)",
+            "type": "number"
+          },
+          "position": {
+            "default": "right",
+            "description": "Place chips to the right or below the artboard",
+            "type": "string",
+            "enum": [
+              "right",
+              "bottom"
+            ]
+          },
+          "include_info": {
+            "default": true,
+            "description": "Include color value labels next to chips",
+            "type": "boolean"
+          },
+          "layer_name": {
+            "default": "Color Chips",
+            "description": "Layer name for color chips",
+            "type": "string"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "place_style_guide",
+      "title": "Place Style Guide",
+      "description": "Place a visual style guide next to the artboard: color chips (path, text and gradient stop colors), font samples, and legends of recurring spacings, artboard margins and guide gaps. Everything goes on a NON-PRINTING layer (created with Print off; if layer_name already exists its print setting is kept and a warning is returned). By default nothing is drawn on the artboard itself; set annotate_artboard=true to also draw semi-transparent measurement bars and numbers ON the artboard (same non-printing layer, but visible on screen and possibly in screen/image exports).",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "artboard_index": {
+            "description": "Target artboard (default: active artboard)",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "position": {
+            "default": "right",
+            "description": "Place style guide to the right or below the artboard",
+            "type": "string",
+            "enum": [
+              "right",
+              "bottom"
+            ]
+          },
+          "layer_name": {
+            "default": "Style Guide",
+            "description": "Layer name for the style guide",
+            "type": "string"
+          },
+          "annotate_artboard": {
+            "default": false,
+            "description": "Also draw measurement bars and numbers ON the artboard for spacings, margins and guide gaps (default: false = legends only, placed outside the artboard)",
+            "type": "boolean"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_crop_marks",
+      "title": "Create Crop Marks (トンボ)",
+      "description": "Create crop marks (トンボ / trim marks) on the active artboard or selected objects. By default, creates marks for the artboard and expands the artboard to include all marks; the original (trim) rectangle is returned as original_artboard_rect. With use_selection=true, creates marks for the currently selected object(s) without modifying the artboard. Automatically selects Japanese-style (日本式) or Western-style crop marks based on locale. The Illustrator crop mark style preference, selection and active artboard are restored afterwards. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "style": {
+            "default": "auto",
+            "description": "Crop mark style. \"japanese\" = double-line marks with 3mm bleed indication (日本式トンボ). \"western\" = single-line marks (西洋式トンボ). \"auto\" = detect from locale parameter or Illustrator locale.",
+            "type": "string",
+            "enum": [
+              "auto",
+              "japanese",
+              "western"
+            ]
+          },
+          "locale": {
+            "description": "User locale (e.g. \"ja\", \"ja-JP\", \"en-US\", \"de-DE\"). Used to auto-detect crop mark style when style is \"auto\". Japanese locales (ja*) → Japanese marks, others → Western marks. If omitted, falls back to Illustrator's own locale setting.",
+            "type": "string"
+          },
+          "use_selection": {
+            "default": false,
+            "description": "If true, create crop marks for the currently selected object(s) instead of the artboard. The artboard will NOT be modified. If false (default), creates marks for the artboard and expands it to fit.",
+            "type": "boolean"
+          },
+          "artboard_index": {
+            "description": "Target artboard index (0-based). Defaults to the currently active artboard. Ignored when use_selection is true.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_document",
+      "title": "Create Document",
+      "description": "Create a new Illustrator document. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "width": {
+            "default": 595.28,
+            "description": "Document width in points (default: A4 width 595.28pt)",
+            "type": "number"
+          },
+          "height": {
+            "default": 841.89,
+            "description": "Document height in points (default: A4 height 841.89pt)",
+            "type": "number"
+          },
+          "color_mode": {
+            "default": "rgb",
+            "description": "Color mode (default: rgb)",
+            "type": "string",
+            "enum": [
+              "rgb",
+              "cmyk"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "close_document",
+      "title": "Close Document",
+      "description": "Close the active Illustrator document. If the document has unsaved changes and save is omitted, the document is NOT closed and an error is returned — pass save: true to save, or save: false to explicitly discard the changes. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "save": {
+            "description": "true = save then close; false = close and DISCARD unsaved changes. Omit to close only when there are no unsaved changes",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "save_document",
+      "title": "Save Document",
+      "description": "Save the active Illustrator document. save_as refuses to replace an existing file unless overwrite is true. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "mode": {
+            "default": "save",
+            "description": "save = overwrite, save_as = save to new path",
+            "type": "string",
+            "enum": [
+              "save",
+              "save_as"
+            ]
+          },
+          "path": {
+            "description": "Absolute file path for save_as mode. If omitted, auto-generates a new non-conflicting name (<name>_2.ai, ...) in the same directory as the document (or ~/Desktop for unsaved documents)",
+            "type": "string"
+          },
+          "overwrite": {
+            "description": "save_as only: allow replacing an existing file at path (default: false = error if the file exists)",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "open_document",
+      "title": "Open Document",
+      "description": "Open an Illustrator document from a file path. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute file path to open (.ai, .eps, .pdf, .svg, etc.)"
+          },
+          "color_space": {
+            "description": "Force color space conversion on open. Omit to keep original.",
+            "type": "string",
+            "enum": [
+              "RGB",
+              "CMYK"
+            ]
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "group_objects",
+      "title": "Group Objects",
+      "description": "Group multiple objects into a single group. The first UUID in the array becomes the bottommost item, the last becomes the topmost. If any UUID is not found, nothing is grouped and the missing UUIDs are returned in notFound. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuids": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "UUIDs of objects to group. Order matters: first=bottom, last=top in layer panel."
+          },
+          "name": {
+            "description": "Name for the new group",
+            "type": "string"
+          },
+          "clipped": {
+            "description": "Create as clipping group. The last UUID becomes the clip path (topmost). Example: [content-uuid, mask-uuid] — mask-uuid clips content-uuid.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "uuids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "ungroup_objects",
+      "title": "Ungroup Objects",
+      "description": "Ungroup a group, releasing its children to the parent layer. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "UUID of the group to ungroup"
+          }
+        },
+        "required": [
+          "uuid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "duplicate_objects",
+      "title": "Duplicate Objects",
+      "description": "Duplicate one or more objects, optionally offsetting the copies. Copies (and their group/compound-path children) get new UUIDs; notes/memos are kept (objects whose note cannot be rewritten keep the source UUID and are listed in warnings). Missing UUIDs are listed in notFound and per-item failures in failed (success is then false, but copies that were made are still returned). Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuids": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "UUIDs of objects to duplicate"
+          },
+          "offset": {
+            "description": "Offset for duplicated objects",
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number",
+                "description": "X offset from original"
+              },
+              "y": {
+                "type": "number",
+                "description": "Y offset from original. Positive = down in artboard-web, up in document coordinates."
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ]
+          },
+          "target_layer": {
+            "description": "Top-level layer name to place duplicates in. If several layers share the name, the topmost one is used and a warning is returned",
+            "type": "string"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "uuids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_fonts",
+      "title": "List Fonts",
+      "description": "List fonts available in Illustrator. Does not require an open document.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "filter": {
+            "description": "Filter by family or name (case-insensitive partial match)",
+            "type": "string"
+          },
+          "limit": {
+            "default": 100,
+            "description": "Max fonts to return (default 100)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "manage_artboards",
+      "title": "Manage Artboards",
+      "description": "Add, remove, resize, rename, fit, or rearrange artboards. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "add",
+              "remove",
+              "resize",
+              "rename",
+              "fit_to_art",
+              "rearrange"
+            ],
+            "description": "Action to perform"
+          },
+          "index": {
+            "description": "Target artboard index (0-based). Required for remove/resize/rename/fit_to_art. Note: the last remaining artboard cannot be removed.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "rect": {
+            "description": "Position and size for add/resize (document coordinates)",
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "width": {
+                "type": "number"
+              },
+              "height": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y",
+              "width",
+              "height"
+            ]
+          },
+          "name": {
+            "description": "New name for rename action",
+            "type": "string"
+          },
+          "layout": {
+            "description": "Artboard layout for rearrange",
+            "type": "string",
+            "enum": [
+              "grid_by_row",
+              "grid_by_col",
+              "row",
+              "column"
+            ]
+          },
+          "rows_or_cols": {
+            "description": "Number of rows or columns for rearrange",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "spacing": {
+            "default": 20,
+            "description": "Spacing in points for rearrange",
+            "type": "number"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "set_z_order",
+      "title": "Set Z-Order",
+      "description": "Change the stacking order of an object. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "UUID of the object"
+          },
+          "command": {
+            "type": "string",
+            "enum": [
+              "bring_to_front",
+              "bring_forward",
+              "send_backward",
+              "send_to_back"
+            ],
+            "description": "Stacking order command"
+          }
+        },
+        "required": [
+          "uuid",
+          "command"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "move_to_layer",
+      "title": "Move to Layer",
+      "description": "Move one or more objects to a different layer. Objects that are found are moved; missing UUIDs are listed in notFound and per-object failures in errors (success is false if either is non-empty). Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuids": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "UUIDs of objects to move"
+          },
+          "target_layer": {
+            "type": "string",
+            "description": "Target top-level layer name. If several layers share the name, the topmost one is used and a warning is returned"
+          },
+          "position": {
+            "default": "beginning",
+            "description": "beginning = front of layer, end = back of layer",
+            "type": "string",
+            "enum": [
+              "beginning",
+              "end"
+            ]
+          }
+        },
+        "required": [
+          "uuids",
+          "target_layer"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "delete_objects",
+      "title": "Delete Objects",
+      "description": "Delete one or more objects by UUID (get UUIDs from find_objects / get_layers / get_selection). Locked objects are skipped unless force_unlock is true. success is false if any UUID was not found or could not be deleted (see notFound / errors). The undo tool may revert it, but undo steps are Illustrator history steps, not tied to MCP calls. To delete a whole layer use manage_layers instead. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuids": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "UUIDs of objects to delete"
+          },
+          "force_unlock": {
+            "default": false,
+            "description": "Unlock locked objects before deleting them (default: false = skip locked objects with an error)",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "uuids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "apply_graphic_style",
+      "title": "Apply Graphic Style",
+      "description": "Apply a graphic style to objects. Objects that are found are styled; missing UUIDs are listed in notFound and per-object failures in errors (success is false if either is non-empty). Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "style_name": {
+            "type": "string",
+            "description": "Name of the graphic style to apply"
+          },
+          "uuids": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "UUIDs of target objects"
+          },
+          "merge": {
+            "description": "true = merge with existing appearance, false = replace",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "style_name",
+          "uuids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_graphic_styles",
+      "title": "List Graphic Styles",
+      "description": "List all graphic styles in the active document.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "manage_swatches",
+      "title": "Manage Swatches",
+      "description": "Add, update, or delete swatches in the active document. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "add",
+              "update",
+              "delete"
+            ],
+            "description": "Action to perform"
+          },
+          "name": {
+            "type": "string",
+            "description": "Swatch name"
+          },
+          "color": {
+            "description": "Color for add/update (required for add)",
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "cmyk",
+                    "description": "Color type"
+                  },
+                  "c": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Cyan (0-100)"
+                  },
+                  "m": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Magenta (0-100)"
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Yellow (0-100)"
+                  },
+                  "k": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Black (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "c",
+                  "m",
+                  "y",
+                  "k"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "rgb",
+                    "description": "Color type"
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Red (0-255)"
+                  },
+                  "g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Green (0-255)"
+                  },
+                  "b": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255,
+                    "description": "Blue (0-255)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "r",
+                  "g",
+                  "b"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "gray",
+                    "description": "Color type"
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Gray value (0-100)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "none",
+                    "description": "Color type"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "action",
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "apply_text_style",
+      "title": "Apply Text Style",
+      "description": "Apply a character or paragraph style to a text frame. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "UUID of the text frame"
+          },
+          "style_type": {
+            "type": "string",
+            "enum": [
+              "character",
+              "paragraph"
+            ],
+            "description": "Type of style to apply"
+          },
+          "style_name": {
+            "type": "string",
+            "description": "Name of the style"
+          },
+          "clear_overrides": {
+            "description": "Clear existing formatting overrides before applying",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "uuid",
+          "style_type",
+          "style_name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_text_styles",
+      "title": "List Text Styles",
+      "description": "List all character and paragraph styles in the active document.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_gradient",
+      "title": "Create Gradient",
+      "description": "Create a gradient in the document and optionally apply it to objects. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Gradient name"
+          },
+          "type": {
+            "default": "linear",
+            "type": "string",
+            "enum": [
+              "linear",
+              "radial"
+            ]
+          },
+          "stops": {
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "color": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "cmyk",
+                          "description": "Color type"
+                        },
+                        "c": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100,
+                          "description": "Cyan (0-100)"
+                        },
+                        "m": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100,
+                          "description": "Magenta (0-100)"
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100,
+                          "description": "Yellow (0-100)"
+                        },
+                        "k": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100,
+                          "description": "Black (0-100)"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "c",
+                        "m",
+                        "y",
+                        "k"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "rgb",
+                          "description": "Color type"
+                        },
+                        "r": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 255,
+                          "description": "Red (0-255)"
+                        },
+                        "g": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 255,
+                          "description": "Green (0-255)"
+                        },
+                        "b": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 255,
+                          "description": "Blue (0-255)"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "r",
+                        "g",
+                        "b"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "gray",
+                          "description": "Color type"
+                        },
+                        "value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100,
+                          "description": "Gray value (0-100)"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "value"
+                      ]
+                    }
+                  ],
+                  "description": "Stop color"
+                },
+                "position": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Position on ramp (0-100)"
+                },
+                "mid_point": {
+                  "default": 50,
+                  "description": "Midpoint between this stop and next (13-87)",
+                  "type": "number",
+                  "minimum": 13,
+                  "maximum": 87
+                },
+                "opacity": {
+                  "default": 100,
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "color",
+                "position"
+              ]
+            },
+            "description": "Gradient stops (minimum 2)"
+          },
+          "apply_to_uuids": {
+            "description": "UUIDs of objects to apply this gradient as fill. For groups/compound paths it is applied to every path and text inside (clipping paths and guides are skipped) and checked by reading back; verified then reports descendantFills. UUIDs that cannot be found are listed in notFound, objects that could not be painted in errors; either makes success false (the gradient itself is still created).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "angle": {
+            "default": 0,
+            "description": "Gradient angle (for linear). Note: may not take effect due to a long-standing Illustrator bug (since 2008).",
+            "type": "number"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "stops"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "manage_linked_images",
+      "title": "Manage Linked Images",
+      "description": "Relink or embed a placed (linked) image. embed converts PlacedItem to RasterItem — the original UUID becomes invalid and a new UUID for the RasterItem is returned. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "UUID of the placed (linked) image"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "relink",
+              "embed"
+            ],
+            "description": "Action to perform"
+          },
+          "new_path": {
+            "description": "New file path (required for relink)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "uuid",
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "undo",
+      "title": "Undo / Redo",
+      "description": "Undo or redo steps in Illustrator's history. Steps are Illustrator history entries, not MCP tool calls (one tool call may create several steps). Returns count = steps actually performed; if a step fails, the result is an error that still reports how many were performed. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "action": {
+            "default": "undo",
+            "type": "string",
+            "enum": [
+              "undo",
+              "redo"
+            ]
+          },
+          "count": {
+            "default": 1,
+            "description": "Number of times to undo/redo (max 20)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "manage_datasets",
+      "title": "Manage Variables & Datasets",
+      "description": "List variables/datasets, apply or create datasets, bind variables to objects, import/export variable XML, or generate artboards from CSV. import (XML) replaces ALL existing variables and datasets in the document. import_csv does not create variables or datasets: it copies the objects on artboard 0 (left unchanged as the template) onto one new artboard per CSV row, placed to the right of existing artboards, and sets the text of copied text frames whose name matches a CSV header. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list_variables",
+              "list_datasets",
+              "apply_dataset",
+              "create_dataset",
+              "bind_variable",
+              "import_csv",
+              "import",
+              "export"
+            ],
+            "description": "Action to perform"
+          },
+          "dataset_name": {
+            "description": "Dataset name (for apply_dataset, create_dataset)",
+            "type": "string"
+          },
+          "variable_name": {
+            "description": "Variable name (for bind_variable)",
+            "type": "string"
+          },
+          "object_name": {
+            "description": "Object name to bind variable to (for bind_variable)",
+            "type": "string"
+          },
+          "dataset_name_prefix": {
+            "description": "Prefix for auto-generated dataset names (for import_csv). If omitted, first column value is used.",
+            "type": "string"
+          },
+          "file_path": {
+            "description": "File path (XML for import/export, CSV for import_csv)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "place_symbol",
+      "title": "Place Symbol",
+      "description": "Place a new symbol instance or replace the symbol definition of an existing instance. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "place",
+              "replace"
+            ],
+            "description": "place = new instance, replace = swap symbol definition"
+          },
+          "symbol_name": {
+            "type": "string",
+            "description": "Symbol name to place or new symbol name for replace"
+          },
+          "x": {
+            "description": "X of the instance top-left (for place action)",
+            "type": "number"
+          },
+          "y": {
+            "description": "Y of the instance top-left (for place action)",
+            "type": "number"
+          },
+          "uuid": {
+            "description": "UUID of existing symbol item (for replace action)",
+            "type": "string"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "action",
+          "symbol_name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_path_text",
+      "title": "Create Path Text",
+      "description": "Create a text frame that flows along a path. If font_name is not found, nothing is created and an error with font_candidates is returned. Note: Illustrator will be activated (brought to foreground) during execution.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "path_uuid": {
+            "type": "string",
+            "description": "UUID of the path to place text along"
+          },
+          "contents": {
+            "type": "string",
+            "description": "Text contents"
+          },
+          "font_name": {
+            "description": "Exact font name as listed by list_fonts (the \"name\" field, e.g. \"ArialMT\"). Not a partial match: if not found, nothing is created and an error with font_candidates is returned.",
+            "type": "string"
+          },
+          "font_size": {
+            "description": "Font size (pt)",
+            "type": "number"
+          },
+          "tracking": {
+            "description": "Letter spacing (tracking) in 1/1000 em. 0 = none, positive = looser, negative = tighter. Same units and range as Illustrator's Character panel.",
+            "type": "number",
+            "minimum": -1000,
+            "maximum": 10000
+          },
+          "justification": {
+            "description": "Alignment of the text along the path: left (from the path start) | center | right (toward the path end).",
+            "type": "string",
+            "enum": [
+              "left",
+              "center",
+              "right"
+            ]
+          },
+          "layer_name": {
+            "description": "Target layer name",
+            "type": "string"
+          },
+          "name": {
+            "description": "Object name",
+            "type": "string"
+          },
+          "coordinate_system": {
+            "description": "Coordinate system. Auto-detected from document by default (CMYK/print → document, RGB/web → artboard-web). artboard-web: origin at active artboard top-left, Y-down. document: Illustrator native coords, origin at bottom-left, Y-up. Call get_document_info to check which system is active.",
+            "type": "string",
+            "enum": [
+              "artboard-web",
+              "document"
+            ]
+          }
+        },
+        "required": [
+          "path_uuid",
+          "contents"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "select_objects",
+      "title": "Select Objects",
+      "description": "Select objects by UUID. Pass an empty array to deselect all. Selected objects can then be manipulated interactively in Illustrator.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "uuids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of object UUIDs to select. Pass empty array [] to deselect all."
+          }
+        },
+        "required": [
+          "uuids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "convert_coordinate",
+      "title": "Convert Coordinate",
+      "description": "Convert a point between artboard and document coordinate systems in the active document.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "point": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number",
+                "description": "X value"
+              },
+              "y": {
+                "type": "number",
+                "description": "Y value"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "description": "Point to convert"
+          },
+          "from": {
+            "type": "string",
+            "enum": [
+              "artboard",
+              "document"
+            ],
+            "description": "Source coordinate system"
+          },
+          "to": {
+            "type": "string",
+            "enum": [
+              "artboard",
+              "document"
+            ],
+            "description": "Destination coordinate system"
+          }
+        },
+        "required": [
+          "point",
+          "from",
+          "to"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}
