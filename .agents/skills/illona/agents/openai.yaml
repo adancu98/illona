@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illona Illustrator"
+  short_description: "Create editable artwork in Adobe Illustrator"
+  default_prompt: "Use $illona to create or refine editable Illustrator artwork, then preview and verify the requested deliverables."
