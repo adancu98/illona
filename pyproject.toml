@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "illona-illustrator-mcp"
+version = "0.4.1"
+description = "Illona: editable vector illustration and brochure workflows for stable Adobe Illustrator on macOS"
+requires-python = ">=3.11"
+dependencies = ["mcp>=1.30,<2", "pydantic>=2.11,<3", "pypdf>=6,<8", "jsonschema>=4.26,<5"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+illona = "illona_mcp.server:main"
+
+[tool.setuptools.package-data]
+illona_mcp = ["host/*.jsx", "host/*.applescript", "ie3_runtime/*", "creold_runtime/*", "creold_runtime/scripts/*", "creold_runtime/scripts/*/*", "creold_runtime/archives/*"]
+
+[tool.setuptools.packages.find]
+include = ["illona_mcp*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
